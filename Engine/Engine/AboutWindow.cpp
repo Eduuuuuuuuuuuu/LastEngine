@@ -18,14 +18,14 @@ void AboutWindow::DrawWindow()
 	UpdateMouseState();
 
     // Title
-    ImGui::Text("SpectraEngine");
+    ImGui::Text("LastEngine");
     ImGui::Separator();
 
     // Description
     ImGui::Text("Description:");
-    ImGui::TextWrapped("SpectraEngine is a 3D game engine developed in C++ with OpenGL, currently capable of rendering geometry with a range of controls and information displays.");
+    ImGui::TextWrapped("LastEngine is a 3D game engine developed in C++ with OpenGL, currently capable of rendering geometry with a range of controls and information displays. Forked from: https://github.com/CITM-UPC/SpectraEngine");
     ImGui::Spacing();
-    HyperLink("GitHub", "https://github.com/CITM-UPC/SpectraEngine");
+    HyperLink("GitHub", "https://github.com/Eduuuuuuuuuuuu/LastEngine");
     ImGui::Spacing();
 
     ImGui::Separator();
@@ -33,9 +33,8 @@ void AboutWindow::DrawWindow()
     // Team Members
     ImGui::Text("Team Members:");
 	ImGui::Spacing();
-    HyperLink("Guillem Alqueza", "https://github.com/guillemalqueza");
-    HyperLink("Miguel Iglesias", "https://github.com/MiguelIglesiasAbarca");
-    HyperLink("Lluc Cid", "https://github.com/Lluccib");
+    HyperLink("Eduard Garcia", "https://github.com/Eduuuuuuuuuuuu");
+    ///
     ImGui::Spacing();
 
     ImGui::Separator();

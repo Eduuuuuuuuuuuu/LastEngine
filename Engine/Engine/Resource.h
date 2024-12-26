@@ -5,6 +5,7 @@
 enum class ResourceType
 {
 	TEXTURE,
+	SCRIPT,
 	MODEL,
 	UNKNOWN = -1
 };
