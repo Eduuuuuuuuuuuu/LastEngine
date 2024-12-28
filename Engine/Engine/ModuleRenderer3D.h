@@ -2,6 +2,7 @@
 
 #include "Module.h"
 #include "Grid.h"
+#include "Frustum.h"
 
 #include <SDL2/SDL_video.h>
 #include <GL/glew.h>
@@ -33,4 +34,6 @@ public:
 	GLuint fbo;
 	GLuint fboTexture;
 	GLuint rbo;
+
+	Frustum frustum;
 };

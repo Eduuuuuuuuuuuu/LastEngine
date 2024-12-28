@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <string>
+#include "AABB.h"
 
 typedef unsigned int uint;
 
@@ -14,6 +15,9 @@ public:
 	void DrawNormals(bool vertexNormals, bool faceNormals, float vertexNormalLength, float faceNormalLength, glm::vec3 vertexNormalColor, glm::vec3 faceNormalColor);
 	void CleanUpMesh();
 
+	AABB boundingBox;
+
+	void CalculateBoundingBox();
 public:
 	uint indicesId = 0;
 	uint indicesCount = 0;

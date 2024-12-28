@@ -117,6 +117,12 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Sources\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleInput.h">
@@ -216,6 +222,12 @@
       <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
       <Filter>Sources\Resources</Filter>
     </ClInclude>
   </ItemGroup>
