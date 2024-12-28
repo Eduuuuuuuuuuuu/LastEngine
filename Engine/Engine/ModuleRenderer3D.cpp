@@ -124,12 +124,12 @@ bool ModuleRenderer3D::PreUpdate(float dt)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
+		
 	glm::mat4 viewMatrix = app->camera->GetViewMatrix();
 	glLoadMatrixf(glm::value_ptr(viewMatrix));
 
-	// Actualizar el frustum
-	frustum.Update(projectionMatrix, viewMatrix);
+	//// Actualizar el frustum
+	//frustum.Update(projectionMatrix, viewMatrix);
 
 	return true;
 }

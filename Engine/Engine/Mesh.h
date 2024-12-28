@@ -15,7 +15,7 @@ public:
 	void DrawNormals(bool vertexNormals, bool faceNormals, float vertexNormalLength, float faceNormalLength, glm::vec3 vertexNormalColor, glm::vec3 faceNormalColor);
 	void CleanUpMesh();
 
-	AABB boundingBox;
+	/*AABB boundingBox;*/
 
 	void CalculateBoundingBox();
 public:

@@ -35,5 +35,5 @@ public:
 	GLuint fboTexture;
 	GLuint rbo;
 
-	Frustum frustum;
+	/*Frustum frustum;*/
 };

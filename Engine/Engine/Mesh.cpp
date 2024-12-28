@@ -161,11 +161,11 @@ void Mesh::CleanUpMesh()
 	texCoords = nullptr;
 }
 
-void Mesh::CalculateBoundingBox() {
-	boundingBox.SetNegativeInfinity();
-
-	for (size_t i = 0; i < verticesCount; i++) {
-		glm::vec3 position(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
-		boundingBox.Encapsulate(position);
-	}
-}
+//void Mesh::CalculateBoundingBox() {
+//	boundingBox.SetNegativeInfinity();
+//
+//	for (size_t i = 0; i < verticesCount; i++) {
+//		glm::vec3 position(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
+//		boundingBox.Encapsulate(position);
+//	}
+//}
