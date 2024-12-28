@@ -1,52 +1,82 @@
 #pragma once
-
 #include "Module.h"
 #include "glm/glm.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/transform.hpp"
-
 #include "ModuleInput.h"
+#include <array>
+
+class Plane {
+public:
+    glm::vec3 normal = glm::vec3(0.0f);
+    float distance = 0.0f;
+
+    void SetFromPoints(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
+        glm::vec3 v1 = p2 - p1;
+        glm::vec3 v2 = p3 - p1;
+        normal = glm::normalize(glm::cross(v1, v2));
+        distance = -glm::dot(normal, p1);
+    }
+
+    float GetSignedDistanceTo(const glm::vec3& point) const {
+        return glm::dot(normal, point) + distance;
+    }
+};
 
 class ModuleCamera : public Module
 {
 public:
-	ModuleCamera(App* app);
-	~ModuleCamera();
+    ModuleCamera(App* app);
+    ~ModuleCamera();
+    bool Start();
+    bool Update(float dt);
+    void HandleInput();
+    void FrameSelected();
+    bool CleanUp();
+    void LookAt(const glm::vec3& spot);
+    const glm::mat4& GetViewMatrix() const;
+    glm::mat4 GetProjectionMatrix() const;
 
-	bool Start();
-	bool Update(float dt);
-	void HandleInput();
-	void FrameSelected();
-	bool CleanUp();
-
-	void LookAt(const glm::vec3& spot);
-	const glm::mat4& GetViewMatrix() const;
-	glm::mat4 GetProjectionMatrix() const;
-
-private:
-	void HandleMovement(glm::vec3& newPos, float speed, float fastSpeed);
-	void HandleZoom(float zoomSpeed);
-	void HandleRotation();
-	void RotateCamera(int dx, int dy);
-	void CalculateViewMatrix();
-	glm::vec3 RotateVector(glm::vec3 const& vector, float angle, glm::vec3 const& axis);
-
-	void SetCursor(CursorType cursorType);
+    // Frustum methods
+    void UpdateFrustumPlanes();
+    bool IsPointVisible(const glm::vec3& point) const;
+    bool IsSphereVisible(const glm::vec3& center, float radius) const;
+    bool IsAABBVisible(const glm::vec3& minPoint, const glm::vec3& maxPoint) const;
 
 public:
-	float fov = 60.0f;
-	float nearPlane = 0.125f;
-	float farPlane = 512.0f;
-	int screenWidth, screenHeight;
+    float fov = 60.0f;
+    float nearPlane = 0.125f;
+    float farPlane = 512.0f;
+    int screenWidth, screenHeight;
 
 private:
-	glm::vec3 X, Y, Z;
-	glm::vec3 pos, ref;
-	glm::mat4 viewMatrix;
+    void HandleMovement(glm::vec3& newPos, float speed, float fastSpeed);
+    void HandleZoom(float zoomSpeed);
+    void HandleRotation();
+    void RotateCamera(int dx, int dy);
+    void CalculateViewMatrix();
+    glm::vec3 RotateVector(glm::vec3 const& vector, float angle, glm::vec3 const& axis);
+    void SetCursor(CursorType cursorType);
 
-	bool isZooming = false;
-	bool isOrbiting = false;
-	bool isFreeLook = false;
-	bool isDragging = false;
-	bool isDefaultCursor = true;
+private:
+    glm::vec3 X, Y, Z;
+    glm::vec3 pos, ref;
+    glm::mat4 viewMatrix;
+    bool isZooming = false;
+    bool isOrbiting = false;
+    bool isFreeLook = false;
+    bool isDragging = false;
+    bool isDefaultCursor = true;
+
+    // Frustum planes
+    enum FrustumPlane {
+        PLANE_NEAR = 0,
+        PLANE_FAR,
+        PLANE_LEFT,
+        PLANE_RIGHT,
+        PLANE_TOP,
+        PLANE_BOTTOM,
+        PLANE_COUNT
+    };
+    std::array<Plane, PLANE_COUNT> frustumPlanes;
 };

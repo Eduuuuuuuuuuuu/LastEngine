@@ -13,6 +13,8 @@ ComponentMesh::~ComponentMesh()
 
 void ComponentMesh::Update()
 {
+	if (!isVisible || !mesh) return; // No renderizar si no es visibleç
+
 	ComponentTransform* transform = gameObject->transform;
 
 	if (transform != nullptr)
@@ -42,6 +44,15 @@ void ComponentMesh::Update()
 		);
 	}
 
+	if (material && material->materialTexture)
+	{
+		mesh->DrawMesh(material->textureId, true, false, false);
+	}
+	else
+	{
+		mesh->DrawMesh(0, false, false, false);
+	}
+
 	if (transform != nullptr) glPopMatrix();
 }
 
@@ -59,4 +70,17 @@ void ComponentMesh::OnEditor()
 		ImGui::Checkbox("Vertex Normals", &showVertexNormals);
 		ImGui::Checkbox("Face Normals", &showFaceNormals);
 	}
+}
+
+AABB ComponentMesh::GetWorldAABB() const
+{
+	if (!mesh) return AABB();
+
+	AABB localAABB = mesh->GetAABB();
+	ComponentTransform* transform = gameObject->transform;
+	if (transform)
+	{
+		return localAABB.Transform(transform->globalTransform);
+	}
+	return localAABB;
 }

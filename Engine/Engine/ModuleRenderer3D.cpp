@@ -118,18 +118,18 @@ bool ModuleRenderer3D::PreUpdate(float dt)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
 	glm::mat4 projectionMatrix = app->camera->GetProjectionMatrix();
 	glLoadMatrixf(glm::value_ptr(projectionMatrix));
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-		
 	glm::mat4 viewMatrix = app->camera->GetViewMatrix();
 	glLoadMatrixf(glm::value_ptr(viewMatrix));
 
-	//// Actualizar el frustum
-	//frustum.Update(projectionMatrix, viewMatrix);
+	app->camera->UpdateFrustumPlanes();
+
+	// Realizar frustum culling en todos los objetos
+	PerformFrustumCulling(app->scene->root);
 
 	return true;
 }
@@ -214,4 +214,29 @@ void ModuleRenderer3D::CreateFramebuffer()
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleRenderer3D::PerformFrustumCulling(GameObject* gameObject)
+{
+	if (!gameObject) return;
+
+	// Comprobar si el objeto tiene malla
+	ComponentMesh* meshComponent = gameObject->mesh;
+	if (meshComponent && meshComponent->mesh)
+	{
+		// Obtener el AABB en coordenadas mundiales
+		AABB worldAABB = meshComponent->GetWorldAABB();
+
+		// Comprobar si está dentro del frustum
+		bool isVisible = app->camera->IsAABBVisible(worldAABB.min_point, worldAABB.max_point);
+
+		// Actualizar la visibilidad del componente
+		meshComponent->isVisible = isVisible;
+	}
+
+	// Recursivamente comprobar los hijos
+	for (auto& child : gameObject->children)
+	{
+		PerformFrustumCulling(child);
+	}
 }

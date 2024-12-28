@@ -15,9 +15,8 @@ public:
 	void DrawNormals(bool vertexNormals, bool faceNormals, float vertexNormalLength, float faceNormalLength, glm::vec3 vertexNormalColor, glm::vec3 faceNormalColor);
 	void CleanUpMesh();
 
-	/*AABB boundingBox;*/
-
-	void CalculateBoundingBox();
+	void CalculateAABB();
+	const AABB& GetAABB() const { return boundingBox; }
 public:
 	uint indicesId = 0;
 	uint indicesCount = 0;
@@ -37,4 +36,6 @@ public:
 	glm::vec4 specularColor = glm::vec4(1.0f);
 	glm::vec4 ambientColor = glm::vec4(1.0f);
 	std::string diffuseTexturePath;
+
+	AABB boundingBox;
 };

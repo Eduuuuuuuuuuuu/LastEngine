@@ -258,3 +258,85 @@ void ModuleCamera::SetCursor(CursorType cursorType)
 		isDragging = (cursorType == CursorType::DRAG);
 	}
 }
+
+void ModuleCamera::UpdateFrustumPlanes() {
+	glm::mat4 viewProj = GetProjectionMatrix() * GetViewMatrix();
+
+	// Extract planes from view-projection matrix
+	// Left plane
+	frustumPlanes[PLANE_LEFT].normal.x = viewProj[3][0] + viewProj[0][0];
+	frustumPlanes[PLANE_LEFT].normal.y = viewProj[3][1] + viewProj[0][1];
+	frustumPlanes[PLANE_LEFT].normal.z = viewProj[3][2] + viewProj[0][2];
+	frustumPlanes[PLANE_LEFT].distance = viewProj[3][3] + viewProj[0][3];
+
+	// Right plane
+	frustumPlanes[PLANE_RIGHT].normal.x = viewProj[3][0] - viewProj[0][0];
+	frustumPlanes[PLANE_RIGHT].normal.y = viewProj[3][1] - viewProj[0][1];
+	frustumPlanes[PLANE_RIGHT].normal.z = viewProj[3][2] - viewProj[0][2];
+	frustumPlanes[PLANE_RIGHT].distance = viewProj[3][3] - viewProj[0][3];
+
+	// Top plane
+	frustumPlanes[PLANE_TOP].normal.x = viewProj[3][0] - viewProj[1][0];
+	frustumPlanes[PLANE_TOP].normal.y = viewProj[3][1] - viewProj[1][1];
+	frustumPlanes[PLANE_TOP].normal.z = viewProj[3][2] - viewProj[1][2];
+	frustumPlanes[PLANE_TOP].distance = viewProj[3][3] - viewProj[1][3];
+
+	// Bottom plane
+	frustumPlanes[PLANE_BOTTOM].normal.x = viewProj[3][0] + viewProj[1][0];
+	frustumPlanes[PLANE_BOTTOM].normal.y = viewProj[3][1] + viewProj[1][1];
+	frustumPlanes[PLANE_BOTTOM].normal.z = viewProj[3][2] + viewProj[1][2];
+	frustumPlanes[PLANE_BOTTOM].distance = viewProj[3][3] + viewProj[1][3];
+
+	// Near plane
+	frustumPlanes[PLANE_NEAR].normal.x = viewProj[3][0] + viewProj[2][0];
+	frustumPlanes[PLANE_NEAR].normal.y = viewProj[3][1] + viewProj[2][1];
+	frustumPlanes[PLANE_NEAR].normal.z = viewProj[3][2] + viewProj[2][2];
+	frustumPlanes[PLANE_NEAR].distance = viewProj[3][3] + viewProj[2][3];
+
+	// Far plane
+	frustumPlanes[PLANE_FAR].normal.x = viewProj[3][0] - viewProj[2][0];
+	frustumPlanes[PLANE_FAR].normal.y = viewProj[3][1] - viewProj[2][1];
+	frustumPlanes[PLANE_FAR].normal.z = viewProj[3][2] - viewProj[2][2];
+	frustumPlanes[PLANE_FAR].distance = viewProj[3][3] - viewProj[2][3];
+
+	// Normalize all planes
+	for (auto& plane : frustumPlanes) {
+		float length = glm::length(plane.normal);
+		plane.normal /= length;
+		plane.distance /= length;
+	}
+}
+
+bool ModuleCamera::IsPointVisible(const glm::vec3& point) const {
+	for (const auto& plane : frustumPlanes) {
+		if (plane.GetSignedDistanceTo(point) < 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool ModuleCamera::IsSphereVisible(const glm::vec3& center, float radius) const {
+	for (const auto& plane : frustumPlanes) {
+		if (plane.GetSignedDistanceTo(center) < -radius) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool ModuleCamera::IsAABBVisible(const glm::vec3& minPoint, const glm::vec3& maxPoint) const {
+	for (const auto& plane : frustumPlanes) {
+		// Get the positive vertex
+		glm::vec3 p(minPoint);
+		if (plane.normal.x >= 0) p.x = maxPoint.x;
+		if (plane.normal.y >= 0) p.y = maxPoint.y;
+		if (plane.normal.z >= 0) p.z = maxPoint.z;
+
+		// If the positive vertex is outside, the AABB is completely outside
+		if (plane.GetSignedDistanceTo(p) < 0) {
+			return false;
+		}
+	}
+	return true;
+}

@@ -131,7 +131,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AboutWindow.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -139,7 +138,6 @@
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="ConsoleWindow.cpp" />
-    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="HierarchyWindow.cpp" />
@@ -175,7 +173,6 @@
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="ConsoleWindow.h" />
     <ClInclude Include="EditorWindow.h" />
-    <ClInclude Include="Frustum.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="HierarchyWindow.h" />

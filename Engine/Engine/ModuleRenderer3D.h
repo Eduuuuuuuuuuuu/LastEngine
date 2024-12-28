@@ -2,7 +2,7 @@
 
 #include "Module.h"
 #include "Grid.h"
-#include "Frustum.h"
+#include "GameObject.h"
 
 #include <SDL2/SDL_video.h>
 #include <GL/glew.h>
@@ -25,6 +25,7 @@ public:
 	void OnResize(int width, int height);
 	void CreateFramebuffer();
 
+	void PerformFrustumCulling(GameObject* gameObject);
 public:
 	GLubyte checkerImage[CHECKERS_WIDTH][CHECKERS_HEIGHT][4];
 	unsigned int checkerTextureId;
@@ -34,6 +35,4 @@ public:
 	GLuint fbo;
 	GLuint fboTexture;
 	GLuint rbo;
-
-	/*Frustum frustum;*/
 };

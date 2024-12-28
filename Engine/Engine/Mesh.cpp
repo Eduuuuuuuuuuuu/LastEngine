@@ -24,6 +24,8 @@ void Mesh::InitMesh()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	CalculateAABB();
 }
 
 void Mesh::DrawMesh(GLuint textureID, bool drawTextures, bool wireframe, bool shadedWireframe)
@@ -161,11 +163,19 @@ void Mesh::CleanUpMesh()
 	texCoords = nullptr;
 }
 
-//void Mesh::CalculateBoundingBox() {
-//	boundingBox.SetNegativeInfinity();
-//
-//	for (size_t i = 0; i < verticesCount; i++) {
-//		glm::vec3 position(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
-//		boundingBox.Encapsulate(position);
-//	}
-//}
+void Mesh::CalculateAABB()
+{
+	if (vertices == nullptr || verticesCount == 0) return;
+
+	std::vector<glm::vec3> vertexPositions;
+	for (uint i = 0; i < verticesCount; i += 3)
+	{
+		vertexPositions.push_back(glm::vec3(
+			vertices[i],
+			vertices[i + 1],
+			vertices[i + 2]
+		));
+	}
+
+	boundingBox.UpdateFromVertices(vertexPositions);
+}

@@ -14,8 +14,12 @@ public:
 	void Update() override;
 	void OnEditor() override;
 
+	AABB GetWorldAABB() const;
+	bool IsVisible() const { return isVisible; }
+
 public:
 	Mesh* mesh;
+	bool isVisible = true;
 
 private:
 	bool showVertexNormals = false;
