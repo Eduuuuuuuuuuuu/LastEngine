@@ -104,7 +104,7 @@ void HierarchyWindow::HierarchyTree(GameObject* node, bool isRoot, const char* s
 
 	if (node->children.empty())
 	{
-		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		flags |= ImGuiTreeNodeFlags_Leaf;
 	}
 
 	bool isSelected = (app->editor->selectedGameObject == node);
@@ -178,6 +178,18 @@ void HierarchyWindow::HierarchyTree(GameObject* node, bool isRoot, const char* s
 			for (unsigned int i = 0; i < node->children.size(); i++)
 			{
 				HierarchyTree(node->children[i], false, searchText);
+			}
+			ImGui::TreePop();
+		}
+
+		if (isOpen)
+		{
+			if (!node->children.empty())
+			{
+				for (unsigned int i = 0; i < node->children.size(); i++)
+				{
+					HierarchyTree(node->children[i], false, searchText);
+				}
 			}
 			ImGui::TreePop();
 		}
