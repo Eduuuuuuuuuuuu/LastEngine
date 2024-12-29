@@ -173,15 +173,6 @@ void HierarchyWindow::HierarchyTree(GameObject* node, bool isRoot, const char* s
 		}
 
 		// Create child nodes
-		if (isOpen && !node->children.empty())
-		{
-			for (unsigned int i = 0; i < node->children.size(); i++)
-			{
-				HierarchyTree(node->children[i], false, searchText);
-			}
-			ImGui::TreePop();
-		}
-
 		if (isOpen)
 		{
 			if (!node->children.empty())
