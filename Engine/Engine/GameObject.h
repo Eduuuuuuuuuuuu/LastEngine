@@ -22,6 +22,11 @@ public:
 	Component* AddComponent(Component* component);
 	Component* GetComponent(ComponentType type);
 
+	void AddChild(GameObject* child);
+	void RemoveChild(GameObject* child);
+	void SetParent(GameObject* newParent);
+	void DeleteGameObject();
+
 public:
 	GameObject* parent;
 	std::string name;
@@ -35,4 +40,6 @@ public:
 
 	bool isActive = true;
 	bool isEditing = false;
+
+	bool toDelete = false;
 };

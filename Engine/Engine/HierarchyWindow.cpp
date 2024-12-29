@@ -15,6 +15,15 @@ void HierarchyWindow::DrawWindow()
 {
 	ImGui::Begin(name.c_str());
 
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete) && app->editor->selectedGameObject != nullptr &&
+		app->editor->selectedGameObject != app->scene->root)
+	{
+		GameObject* toDelete = app->editor->selectedGameObject;
+		app->editor->selectedGameObject = nullptr;  // Limpiamos la referencia primero
+		toDelete->DeleteGameObject();              // Limpiamos la jerarquía y componentes
+		delete toDelete;                           // Ahora sí eliminamos el objeto
+	}
+
 	UpdateMouseState();
 
 	if (ImGui::Button("+", ImVec2(20, 20)))
@@ -113,6 +122,26 @@ void HierarchyWindow::HierarchyTree(GameObject* node, bool isRoot, const char* s
 	if (FilterNode(node, searchText))
 	{
 		bool isOpen = ImGui::TreeNodeEx(node, flags, node->name.c_str());
+
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("GAMEOBJECT", &node, sizeof(GameObject*));
+			ImGui::Text(node->name.c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT"))
+			{
+				GameObject* droppedObject = *(GameObject**)payload->Data;
+				if (droppedObject != node && droppedObject != app->scene->root) // Evitar auto-drop y mover el root
+				{
+					droppedObject->SetParent(node);
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 		if (ImGui::IsItemClicked())
 		{
