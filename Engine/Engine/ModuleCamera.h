@@ -1,10 +1,12 @@
 #pragma once
 #include "Module.h"
 #include "glm/glm.hpp"
+#include "GL/glew.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/transform.hpp"
 #include "ModuleInput.h"
 #include <array>
+#include "AABB.h"
 
 class Plane {
 public:
@@ -42,6 +44,8 @@ public:
     bool IsPointVisible(const glm::vec3& point) const;
     bool IsSphereVisible(const glm::vec3& center, float radius) const;
     bool IsAABBVisible(const glm::vec3& minPoint, const glm::vec3& maxPoint) const;
+    void DrawFrustum() const;
+    void DrawAABBs(const std::vector<std::pair<AABB, bool>>& aabbs) const;
 
 public:
     float fov = 60.0f;
@@ -57,6 +61,11 @@ private:
     void CalculateViewMatrix();
     glm::vec3 RotateVector(glm::vec3 const& vector, float angle, glm::vec3 const& axis);
     void SetCursor(CursorType cursorType);
+
+    //frustum
+    std::array<glm::vec3, 8> CalculateFrustumCorners() const;
+    void DrawFrustumLines(const std::array<glm::vec3, 8>& corners) const;
+    void DrawAABB(const AABB& aabb, bool isVisible) const;
 
 private:
     glm::vec3 X, Y, Z;

@@ -340,3 +340,155 @@ bool ModuleCamera::IsAABBVisible(const glm::vec3& minPoint, const glm::vec3& max
 	}
 	return true;
 }
+
+std::array<glm::vec3, 8> ModuleCamera::CalculateFrustumCorners() const {
+	float aspect = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+	float tanHalfFov = tan(glm::radians(fov * 0.5f));
+
+	float nearHeight = 2.0f * nearPlane * tanHalfFov;
+	float nearWidth = nearHeight * aspect;
+	float farHeight = 2.0f * farPlane * tanHalfFov;
+	float farWidth = farHeight * aspect;
+
+	std::array<glm::vec3, 8> corners;
+
+	// Near plane corners (in view space)
+	corners[0] = glm::vec3(-nearWidth * 0.5f, nearHeight * 0.5f, -nearPlane);
+	corners[1] = glm::vec3(nearWidth * 0.5f, nearHeight * 0.5f, -nearPlane);
+	corners[2] = glm::vec3(nearWidth * 0.5f, -nearHeight * 0.5f, -nearPlane);
+	corners[3] = glm::vec3(-nearWidth * 0.5f, -nearHeight * 0.5f, -nearPlane);
+
+	// Far plane corners (in view space)
+	corners[4] = glm::vec3(-farWidth * 0.5f, farHeight * 0.5f, -farPlane);
+	corners[5] = glm::vec3(farWidth * 0.5f, farHeight * 0.5f, -farPlane);
+	corners[6] = glm::vec3(farWidth * 0.5f, -farHeight * 0.5f, -farPlane);
+	corners[7] = glm::vec3(-farWidth * 0.5f, -farHeight * 0.5f, -farPlane);
+
+	// Transform corners to world space
+	glm::mat4 viewToWorld = glm::inverse(GetViewMatrix());
+	for (auto& corner : corners) {
+		glm::vec4 worldCorner = viewToWorld * glm::vec4(corner, 1.0f);
+		corner = glm::vec3(worldCorner);
+	}
+
+	return corners;
+}
+
+void ModuleCamera::DrawFrustumLines(const std::array<glm::vec3, 8>& corners) const {
+	glLineWidth(1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.75f);
+
+	glBegin(GL_LINES);
+	// Near plane
+	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+
+	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+
+	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+
+	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+
+	// Far plane
+	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+
+	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+
+	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+
+	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+
+	// Connecting lines
+	glVertex3f(corners[0].x, corners[0].y, corners[0].z);
+	glVertex3f(corners[4].x, corners[4].y, corners[4].z);
+
+	glVertex3f(corners[1].x, corners[1].y, corners[1].z);
+	glVertex3f(corners[5].x, corners[5].y, corners[5].z);
+
+	glVertex3f(corners[2].x, corners[2].y, corners[2].z);
+	glVertex3f(corners[6].x, corners[6].y, corners[6].z);
+
+	glVertex3f(corners[3].x, corners[3].y, corners[3].z);
+	glVertex3f(corners[7].x, corners[7].y, corners[7].z);
+	glEnd();
+
+	glDisable(GL_BLEND);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void ModuleCamera::DrawFrustum() const {
+	auto corners = CalculateFrustumCorners();
+	DrawFrustumLines(corners);
+}
+
+void ModuleCamera::DrawAABB(const AABB& aabb, bool isVisible) const {
+	glLineWidth(1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	if (isVisible) {
+		glColor4f(0.0f, 1.0f, 0.0f, 0.75f); // Verde para visible
+	}
+	else {
+		glColor4f(1.0f, 0.0f, 0.0f, 0.75f); // Rojo para no visible
+	}
+
+	glBegin(GL_LINES);
+	// Bottom face
+	glVertex3f(aabb.min_point.x, aabb.min_point.y, aabb.min_point.z);
+	glVertex3f(aabb.max_point.x, aabb.min_point.y, aabb.min_point.z);
+
+	glVertex3f(aabb.max_point.x, aabb.min_point.y, aabb.min_point.z);
+	glVertex3f(aabb.max_point.x, aabb.min_point.y, aabb.max_point.z);
+
+	glVertex3f(aabb.max_point.x, aabb.min_point.y, aabb.max_point.z);
+	glVertex3f(aabb.min_point.x, aabb.min_point.y, aabb.max_point.z);
+
+	glVertex3f(aabb.min_point.x, aabb.min_point.y, aabb.max_point.z);
+	glVertex3f(aabb.min_point.x, aabb.min_point.y, aabb.min_point.z);
+
+	// Top face
+	glVertex3f(aabb.min_point.x, aabb.max_point.y, aabb.min_point.z);
+	glVertex3f(aabb.max_point.x, aabb.max_point.y, aabb.min_point.z);
+
+	glVertex3f(aabb.max_point.x, aabb.max_point.y, aabb.min_point.z);
+	glVertex3f(aabb.max_point.x, aabb.max_point.y, aabb.max_point.z);
+
+	glVertex3f(aabb.max_point.x, aabb.max_point.y, aabb.max_point.z);
+	glVertex3f(aabb.min_point.x, aabb.max_point.y, aabb.max_point.z);
+
+	glVertex3f(aabb.min_point.x, aabb.max_point.y, aabb.max_point.z);
+	glVertex3f(aabb.min_point.x, aabb.max_point.y, aabb.min_point.z);
+
+	// Vertical edges
+	glVertex3f(aabb.min_point.x, aabb.min_point.y, aabb.min_point.z);
+	glVertex3f(aabb.min_point.x, aabb.max_point.y, aabb.min_point.z);
+
+	glVertex3f(aabb.max_point.x, aabb.min_point.y, aabb.min_point.z);
+	glVertex3f(aabb.max_point.x, aabb.max_point.y, aabb.min_point.z);
+
+	glVertex3f(aabb.max_point.x, aabb.min_point.y, aabb.max_point.z);
+	glVertex3f(aabb.max_point.x, aabb.max_point.y, aabb.max_point.z);
+
+	glVertex3f(aabb.min_point.x, aabb.min_point.y, aabb.max_point.z);
+	glVertex3f(aabb.min_point.x, aabb.max_point.y, aabb.max_point.z);
+	glEnd();
+
+	glDisable(GL_BLEND);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void ModuleCamera::DrawAABBs(const std::vector<std::pair<AABB, bool>>& aabbs) const {
+	for (const auto& [aabb, isVisible] : aabbs) {
+		DrawAABB(aabb, isVisible);
+	}
+}

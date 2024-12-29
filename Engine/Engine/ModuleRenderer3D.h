@@ -25,6 +25,7 @@ public:
 	void OnResize(int width, int height);
 	void CreateFramebuffer();
 
+	void CollectDebugAABBs(GameObject* gameObject, std::vector<std::pair<AABB, bool>>& debugAABBs);
 	void PerformFrustumCulling(GameObject* gameObject);
 public:
 	GLubyte checkerImage[CHECKERS_WIDTH][CHECKERS_HEIGHT][4];

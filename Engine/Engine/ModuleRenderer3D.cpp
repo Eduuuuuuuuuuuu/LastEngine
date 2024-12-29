@@ -138,6 +138,11 @@ bool ModuleRenderer3D::PostUpdate(float dt)
 {
 	grid.Render();
 
+	std::vector<std::pair<AABB, bool>> debugAABBs;
+	CollectDebugAABBs(app->scene->root, debugAABBs);
+	app->camera->DrawFrustum();
+	app->camera->DrawAABBs(debugAABBs);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -214,6 +219,23 @@ void ModuleRenderer3D::CreateFramebuffer()
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleRenderer3D::CollectDebugAABBs(GameObject* gameObject, std::vector<std::pair<AABB, bool>>& debugAABBs)
+{
+	if (!gameObject) return;
+
+	ComponentMesh* meshComponent = gameObject->mesh;
+	if (meshComponent && meshComponent->mesh)
+	{
+		AABB worldAABB = meshComponent->GetWorldAABB();
+		debugAABBs.emplace_back(worldAABB, meshComponent->isVisible);
+	}
+
+	for (auto& child : gameObject->children)
+	{
+		CollectDebugAABBs(child, debugAABBs);
+	}
 }
 
 void ModuleRenderer3D::PerformFrustumCulling(GameObject* gameObject)
