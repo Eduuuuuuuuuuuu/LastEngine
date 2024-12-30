@@ -101,7 +101,7 @@ bool ModuleRenderer3D::Awake()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 
 	app->importer->ImportFile("Assets/Models/BakerHouse.fbx", false);
-	app->importer->ImportFile("Assets/Models/cityasset1.fbx", true);
+	app->importer->ImportFile("Assets/Models/cityyasset.fbx", true);
 	app->editor->selectedGameObject = app->scene->root->children[0];
 
 	CreateFramebuffer();
