@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "vector"
+#include "Ray.h"
 
 class AABB {
 public:
@@ -55,5 +56,20 @@ public:
         }
 
         return transformed;
+    }
+
+    bool IntersectsRay(const Ray& ray, float& t_min, float& t_max) const {
+        glm::vec3 invDir = 1.0f / ray.direction;
+
+        glm::vec3 t0 = (min_point - ray.origin) * invDir;
+        glm::vec3 t1 = (max_point - ray.origin) * invDir;
+
+        glm::vec3 tmin = glm::min(t0, t1);
+        glm::vec3 tmax = glm::max(t0, t1);
+
+        t_min = glm::max(glm::max(tmin.x, tmin.y), tmin.z);
+        t_max = glm::min(glm::min(tmax.x, tmax.y), tmax.z);
+
+        return t_max >= t_min && t_max >= 0;
     }
 };

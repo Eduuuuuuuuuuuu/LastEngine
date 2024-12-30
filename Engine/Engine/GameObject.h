@@ -27,6 +27,9 @@ public:
 	void SetParent(GameObject* newParent);
 	void DeleteGameObject();
 
+	const std::vector<GameObject*>& GetChildren() const { return children; }
+	GameObject* GetParent() const { return parent; }
+
 public:
 	GameObject* parent;
 	std::string name;

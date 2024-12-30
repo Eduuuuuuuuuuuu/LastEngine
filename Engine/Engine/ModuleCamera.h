@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include <array>
 #include "AABB.h"
+#include "Mesh.h"
 
 class Plane {
 public:
@@ -46,6 +47,28 @@ public:
     bool IsAABBVisible(const glm::vec3& minPoint, const glm::vec3& maxPoint) const;
     void DrawFrustum() const;
     void DrawAABBs(const std::vector<std::pair<AABB, bool>>& aabbs) const;
+
+    //click objects
+    Ray ScreenPointToRay(int mouseX, int mouseY) const {
+        // Convert screen coordinates to normalized device coordinates (-1 to 1)
+        float normalizedX = (2.0f * mouseX) / screenWidth - 1.0f;
+        float normalizedY = 1.0f - (2.0f * mouseY) / screenHeight;
+
+        // Get inverse view-projection matrix
+        glm::mat4 invVP = glm::inverse(GetProjectionMatrix() * viewMatrix);
+
+        // Transform to world space
+        glm::vec4 rayStart = invVP * glm::vec4(normalizedX, normalizedY, -1.0f, 1.0f);
+        glm::vec4 rayEnd = invVP * glm::vec4(normalizedX, normalizedY, 1.0f, 1.0f);
+
+        rayStart /= rayStart.w;
+        rayEnd /= rayEnd.w;
+
+        glm::vec3 rayDirection = glm::normalize(glm::vec3(rayEnd - rayStart));
+        return Ray(glm::vec3(rayStart), rayDirection);
+    }
+
+    void CheckObjectSelection(int mouseX, int mouseY);
 
 public:
     float fov = 60.0f;

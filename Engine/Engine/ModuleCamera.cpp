@@ -1,3 +1,4 @@
+#include <functional>
 #include "ModuleCamera.h"
 #include "App.h"
 
@@ -73,6 +74,15 @@ void ModuleCamera::HandleInput()
 
 	pos += newPos;
 	ref += newPos;
+
+	if (app->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN &&
+		app->editor->sceneWindow->IsMouseInside() &&
+		app->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE)
+	{
+		int mouseX, mouseY;
+		app->input->GetMousePosition2D(mouseX, mouseY);
+		CheckObjectSelection(mouseX, mouseY);
+	}
 }
 
 void ModuleCamera::HandleMovement(glm::vec3& newPos, float speed, float fastSpeed)
@@ -490,5 +500,37 @@ void ModuleCamera::DrawAABB(const AABB& aabb, bool isVisible) const {
 void ModuleCamera::DrawAABBs(const std::vector<std::pair<AABB, bool>>& aabbs) const {
 	for (const auto& [aabb, isVisible] : aabbs) {
 		DrawAABB(aabb, isVisible);
+	}
+}
+
+void ModuleCamera::CheckObjectSelection(int mouseX, int mouseY) {
+	Ray ray = ScreenPointToRay(mouseX, mouseY);
+	float closest_t = 3.4e38f; //float muy alto
+	GameObject* selected = nullptr;
+
+	std::function<void(GameObject*)> checkObject = [&](GameObject* obj) {
+		if (!obj || !obj->isActive) return;
+
+		ComponentMesh* mesh = static_cast<ComponentMesh*>(obj->GetComponent(ComponentType::MESH));
+		if (mesh && mesh->mesh) {
+			AABB worldAABB = mesh->GetWorldAABB();
+			float t_min, t_max;
+			if (worldAABB.IntersectsRay(ray, t_min, t_max)) {
+				if (t_min < closest_t) {
+					closest_t = t_min;
+					selected = obj;
+				}
+			}
+		}
+
+		for (auto& child : obj->children) {
+			checkObject(child);
+		}
+		};
+
+	checkObject(app->scene->root);
+
+	if (selected) {
+		app->editor->selectedGameObject = selected;
 	}
 }

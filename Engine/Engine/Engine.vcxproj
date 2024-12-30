@@ -193,6 +193,7 @@
     <ClInclude Include="PerformanceWindow.h" />
     <ClInclude Include="PreferencesWindow.h" />
     <ClInclude Include="ProjectWindow.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneWindow.h" />
     <ClInclude Include="Texture.h" />

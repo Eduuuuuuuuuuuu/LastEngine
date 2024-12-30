@@ -78,6 +78,20 @@ public:
 		return mouse_y_motion;
 	}
 
+	void GetMousePosition2D(int& x, int& y) const
+	{
+		x = mouse_x;
+		y = mouse_y;
+	}
+
+	// Método para obtener las coordenadas 3D del mouse
+	void GetMousePosition3D(int& x, int& y, int& z) const
+	{
+		x = mouse_x;
+		y = mouse_y;
+		z = mouse_z;
+	}
+
 private:
 	void SetCursor();
 	void CreateCursors();

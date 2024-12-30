@@ -17,6 +17,17 @@ public:
 
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
 
+    const std::vector<GameObject*>& GetRootObjects() const {
+        std::vector<GameObject*> rootObjects;
+        if (root != nullptr) {
+            for (auto* child : root->GetChildren()) {
+                rootObjects.push_back(child);
+            }
+        }
+        return rootObjects;
+    }
+
+
 public:
 	GameObject* root = nullptr;
 };

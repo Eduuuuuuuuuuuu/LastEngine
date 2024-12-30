@@ -221,5 +221,8 @@
     <ClInclude Include="AABB.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
