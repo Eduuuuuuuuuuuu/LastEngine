@@ -1,14 +1,12 @@
 # SpectraEngine
 
 ## Description
-**SpectraEngine** is a 3D game engine developed in **C++** with **OpenGL**, currently capable of rendering geometry with a range of controls and information displays.
+**SpectraEngine** is a 3D game engine developed in **C++** with **OpenGL**, This project is a fork of the [SpectraEngine](https://github.com/CITM-UPC/SpectraEngine) developed for the first assignment, expanded with new features and optimizations.
 
-The project is under active development, and the code is available on [GitHub](https://github.com/CITM-UPC/SpectraEngine).
+The project is under active development, and the code is available on [GitHub](https://github.com/Eduuuuuuuuuuuu/LastEngine).
 
 ## Team Members
-- [Guillem Alqueza Mayench](https://github.com/guillemalqueza)
-- [Miguel Iglesias Abarca](https://github.com/MiguelIglesiasAbarca)
-- [Lluc Cid](https://github.com/Lluccib)
+- [Eduard García Tobajas](https://github.com/Eduuuuuuuuuuuu)
 
 ## Viewer Controls
 - **Right-click**: Move the current view.
@@ -23,6 +21,8 @@ The project is under active development, and the code is available on [GitHub](h
 - **Texture Import**: Supports PNG and DDS texture formats.
 - **Drag and Drop**: Allows importing files by dragging them directly.
 - **Transform Controls**: Apply transformations like position, rotation, and scale to models.
+- **Mouse-Based Object Selection:**: Select GameObjects in the scene using a mouse.
+- **Frustum Culling**: Optimizes rendering by discarding objects outside the camera's view, with debug visualization.
 - **Logging System**: Provides detailed logging.
 - **Custom File Library**: Manage files with a custom file format.
 - **Shading Modes**: Swap between Shaded, Wireframe & Shaded Wireframe options.
@@ -45,3 +45,8 @@ The project is under active development, and the code is available on [GitHub](h
 - [GLM](https://github.com/g-truc/glm): C++ mathematics library for graphics software based on OpenGL.
 - [Assimp](https://github.com/assimp/assimp): Library to load various 3D file formats into a shared, in-memory immediate format.
 - [DeviL](https://github.com/DentonW/DevIL): Image library supporting loading, saving, and manipulating various image formats.
+
+## Additional Comments
+- Scene auto-loads the Street Environment model at startup.
+- Implements custom file management and scene serialization.
+- Provides debug tools like raycast visualization and AABB display for Frustum Culling.

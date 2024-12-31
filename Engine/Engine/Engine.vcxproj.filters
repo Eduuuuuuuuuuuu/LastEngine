@@ -219,10 +219,10 @@
       <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="AABB.h">
-      <Filter>Sources</Filter>
+      <Filter>Sources\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Ray.h">
-      <Filter>Sources</Filter>
+      <Filter>Sources\Tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
